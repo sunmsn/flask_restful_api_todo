@@ -17,5 +17,5 @@ The features of this website are shown as following:
 ---
 The required libs for this project are shown as following:
 ```
-pip install flask pymysql flask-script flask-migrate
+pip install flask pymysql flask-script flask-migrate flask-restful requests
 ```

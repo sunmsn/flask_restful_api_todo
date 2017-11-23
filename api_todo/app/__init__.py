@@ -14,7 +14,11 @@ def create_app(config_name):
     db.init_app(app)
 
     # register the blueprint
-    from app.auth import auth as auth_blueprint
-    app.register_blueprint(auth_blueprint, url_prefix='/api/v1.0/auth')
+    # from app.auth import auth as auth_blueprint
+    # app.register_blueprint(auth_blueprint, url_prefix='/api/v1.0/auth')
+
+    from app.todo import todo as todo_blueprint
+    app.register_blueprint(todo_blueprint, url_prefix='/api/v1.0/todo')
+
 
     return app
