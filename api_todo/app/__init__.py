@@ -20,5 +20,8 @@ def create_app(config_name):
     from app.todo import todo as todo_blueprint
     app.register_blueprint(todo_blueprint, url_prefix='/api/v1.0/todo')
 
+    from app.frontend import frontend as frontend_blueprint
+    app.register_blueprint(frontend_blueprint)
+
 
     return app

@@ -11,6 +11,7 @@ from app import db
 api = Api(todo)
 # 返回json序列化
 todo_fields = {
+    "id": fields.Integer,
     "content": fields.String,
     "state": fields.String
 }
