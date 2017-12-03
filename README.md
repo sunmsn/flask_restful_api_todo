@@ -11,11 +11,10 @@ The features of this website are shown as following:
 * User verified function
 * Role Management
 * Simple business logic (to do list)
-* payment modules
 * deployment on AWS through Docker
 
 ---
 The required libs for this project are shown as following:
 ```
-pip install flask pymysql flask-script flask-migrate flask-restful requests
+pip install flask pymysql flask-script flask-migrate flask-restful requests passlib flask-mail flask-login
 ```

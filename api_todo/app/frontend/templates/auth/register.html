@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>注册</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  </head>
+  <body>
+
+    <div>
+      <h1>注册</h1>
+      <br>用户名：<input type="text" id="username" value="">
+      <br>密码：<input type="password" id="password" value="">
+      <br>确认密码：<input type="password" id="password_again" value="">
+      <br>邮箱：<input type="email" id="email" value="">
+      <button type="button" id="button">注册</button>
+    </div>
+
+
+    <script type="text/javascript">
+      $('#button').click(function(){
+        var username = $('#username').val();
+        var password = $('#password').val();
+        var password_again = $('#password_again').val();
+        var email = $('#email').val();
+        if (username.length==0||password.length==0||email.length==0) {
+          alert('各项都不能为空白');
+          return ;
+        }
+        if(password!=password_again){
+          alert("两次密码不一致");
+          location.reload();
+          return ;
+        }
+        $.ajax({
+          type: 'POST',
+          url: '/api/v1.0/auth/register',
+          data:{
+            'username': username,
+            'email': email,
+            'password': password
+          },
+          success:function(data,status){
+            alert(status);
+            window.location.replace("/register_finished");
+          },
+          error:function(data,status){
+            alert(data.responseJSON['message']);
+          }
+        });
+      });
+    </script>
+
+  </body>
+</html>
