@@ -1,11 +1,21 @@
 # -*- coding=utf-8 -*-
 from flask_restful import Api, fields, Resource
 from flask_restful import marshal_with, reqparse
+from flask_login import current_user
 
 from app.todo import todo
 from app.models import Todo
 from app.todo.errors import *
 from app import db
+
+# login 验证
+def login_required(f):
+    """Checks whether user is logged in or raises error 401."""
+    def decorator(*args, **kwargs):
+        if not current_user.is_authenticated:
+            abort(401)
+        return f(*args, **kwargs)
+    return decorator
 
 # flask-restful 设置
 api = Api(todo)
@@ -21,6 +31,7 @@ class TodoList(Resource):
     """
     Get one list of todo tasks, or create a list of todo tasks
     """
+    method_decorators = [login_required]
     @marshal_with(todo_fields, envelope='todo')
     def get(self):
         todo = Todo.query.all()
@@ -49,6 +60,7 @@ class TodoDetail(Resource):
     """
     operate (delete,search,update) one todo task
     """
+    method_decorators = [login_required]
     def get_object(self, id):
         todo = Todo.query.filter_by(id=id).first()
         if not todo:
@@ -93,3 +105,30 @@ class TodoDetail(Resource):
 # 配置路由
 api.add_resource(TodoList, '')
 api.add_resource(TodoDetail, '/<id>')
+
+#
+# def authenticate(func):
+#     @wraps(func)
+#     def wrapper(*args, **kwargs):
+#         if not getattr(func, 'authenticated', True):
+#             return func(*args, **kwargs)
+#
+#         acct = basic_authentication()  # custom account lookup function
+#
+#         if acct:
+#             return func(*args, **kwargs)
+#
+#         restful.abort(401)
+#     return wrapper
+
+
+# class Resource(restful.Resource):
+       # applies to all inherited resources
+
+
+
+
+
+
+
+# view = user_required(UserAPI.as_view('users'))

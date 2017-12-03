@@ -57,7 +57,7 @@
             'state': state
           },
           success:function(data,status){alert(status);location.reload();},
-          error:function(data,status){alert(status);}
+          error:function(data,status){alert(data.responseJSON['message']);}
         });
       }
 
@@ -70,7 +70,7 @@
               alert('delete');location.reload();
             }
           },
-          error:function(data,status){alert(status);}
+          error:function(data,status){alert(data.responseJSON['message']);}
         });
       }
 
@@ -85,7 +85,7 @@
             'state': state
           },
           success:function(data,status){alert(status);location.reload();},
-          error:function(data,status){alert(status);}
+          error:function(data,status){alert(data.responseJSON['message']);}
         });
       }
     </script>
