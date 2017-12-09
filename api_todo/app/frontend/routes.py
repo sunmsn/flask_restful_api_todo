@@ -6,14 +6,24 @@ from app.frontend import frontend
 
 
 @frontend.route('/')
-@login_required
-def main():
-    return render_template('main.html')
+def index():
+    return render_template('index.html')
+
+
+@frontend.route('/login')
+def login():
+    return render_template('auth/login.html')
 
 
 @frontend.route('/register')
 def register():
     return render_template('auth/register.html')
+
+
+@frontend.route('/main')
+@login_required
+def main():
+    return render_template('main.html')
 
 
 @frontend.route('/register_finished')
@@ -26,13 +36,8 @@ def confirm_email(token):
     return render_template('auth/confirm_email.html')
 
 
-@frontend.route('/login')
-def login():
-    return render_template('auth/login.html')
-
-
 @frontend.route("/logout")
 @login_required
 def logout():
     logout_user()
-    return "redirect(somewhere)"
+    return render_template('auth/logout.html')

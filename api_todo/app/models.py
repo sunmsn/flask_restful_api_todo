@@ -12,6 +12,7 @@ class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(32), unique=True)
     is_authenticated = db.Column(db.Boolean)
+    role =  db.Column(db.Integer, default=0)
 
     def __init__(self, name=None):
         self.name = name
@@ -94,7 +95,8 @@ class Todo(db.Model):
     user = db.relationship("User",
                            backref=db.backref('todo', lazy='dynamic'))
 
-    def __init__(self, content, state=None):
+    def __init__(self, user, content, state=None):
+        self.user = user
         self.content = content
         self.state = state
 

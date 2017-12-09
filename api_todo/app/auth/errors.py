@@ -11,3 +11,7 @@ def abort_username_existed(attr_name):
 
 def abort_wrong_login():
     abort(400, message="wrong password or user is not existed")
+
+
+def abort_role_cannot_setting():
+    abort(404, message="Wrong role setting")

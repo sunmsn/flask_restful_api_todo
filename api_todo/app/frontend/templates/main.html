@@ -19,6 +19,18 @@
       </ul>
     </div>
 
+    <hr>
+    <h1>User role setting</h1>
+    <div>
+      <p><button type="button" onclick="rolesetting(0)">Normal User</button>: 1 task</p>
+      <p><button type="button" onclick="rolesetting(1)">VIP 1 User</button>: 3 task</p>
+      <p><button type="button" onclick="rolesetting(2)">VIP 2 User</button>: 5 task</p>
+      <p><button type="button" onclick="rolesetting(-1)">Admin User</button>: unlimited task</p>
+
+
+
+
+    </div>
 
     <script type="text/javascript">
       $(function(){
@@ -83,6 +95,18 @@
           data:{
             'content': content,
             'state': state
+          },
+          success:function(data,status){alert(status);location.reload();},
+          error:function(data,status){alert(data.responseJSON['message']);}
+        });
+      }
+
+      function rolesetting(role){
+        $.ajax({
+          type: 'POST',
+          url: '/api/v1.0/auth/role',
+          data:{
+            'role': role
           },
           success:function(data,status){alert(status);location.reload();},
           error:function(data,status){alert(data.responseJSON['message']);}
