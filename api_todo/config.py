@@ -14,7 +14,7 @@ class Config:
 
     # gmail authentication
     MAIL_USERNAME = 'flask.restful.api.todo@gmail.com'
-    MAIL_PASSWORD = ''
+    MAIL_PASSWORD = 'flask_restful_api_todo'
 
     # mail accounts
     MAIL_DEFAULT_SENDER = 'flask.restful.api.todo@gmail.com'

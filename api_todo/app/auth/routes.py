@@ -3,7 +3,7 @@ from flask import url_for
 from flask_restful import Api, fields, Resource
 from flask_restful import reqparse
 from flask_restful import marshal_with
-from flask_login import login_user
+from flask_login import login_user, current_user
 
 from app.auth import auth
 from app.models import User, LocalAuth
@@ -11,6 +11,15 @@ from app.auth.errors import *
 from app.auth.email import generate_confirmation_token
 from app.auth.email import confirm_token, send_email
 from app import db
+
+# login 验证
+def login_required(f):
+    """Checks whether user is logged in or raises error 401."""
+    def decorator(*args, **kwargs):
+        if not current_user.is_authenticated:
+            abort(401)
+        return f(*args, **kwargs)
+    return decorator
 
 # flask-restful 设置
 api = Api(auth)
@@ -95,7 +104,33 @@ class LocalAuthLogin(Resource):
         return "login successfully", 200
 
 
+class RoleChange(Resource):
+    method_decorators = [login_required]
+
+    def post(self):
+        parser = reqparse.RequestParser()
+        parser.add_argument('role')
+        args = parser.parse_args()
+        if not args['role']:
+            return current_user.role, 200
+        #  转换为int
+        if args['role'] == "-1":
+            role = -1
+        elif args['role'] == "0":
+            role = 0
+        elif args['role'] == "1":
+            role = 1
+        elif args['role'] == "2":
+            role = 2
+        else:
+            abort_role_cannot_setting()
+        current_user.role = role
+        db.session.commit()
+        return args['role'], 200
+
+
 # the Api resource routing
 api.add_resource(LocalRegister, '/register')
 api.add_resource(LocalAuthLogin, '/login')
 api.add_resource(EmailConirmation, '/confirm/<token>')
+api.add_resource(RoleChange, '/role')

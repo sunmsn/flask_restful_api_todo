@@ -34,7 +34,7 @@ class TodoList(Resource):
     method_decorators = [login_required]
     @marshal_with(todo_fields, envelope='todo')
     def get(self):
-        todo = Todo.query.all()
+        todo = Todo.query.filter_by(user=current_user).all()
         return todo
 
     def post(self):
@@ -48,9 +48,22 @@ class TodoList(Resource):
         if args['state'] is not None:
             if len(args['state']) > 10:
                 abort_unacceptable_length("state")
+        # 验证用户角色
+        if current_user.role == 0:
+            limitation = 1
+            role_name = 'normal user'
+        elif current_user.role == 1:
+            limitation = 3
+            role_name = 'vip 1 user'
+        elif current_user.role == 2:
+            limitation = 5
+            role_name = 'vip 2 user'
+        if limitation:
+            if Todo.query.filter_by(user=current_user).count() >= limitation:
+                abort_role_limitation(role_name, limitation)
         # 写入数据库
         new_todo = Todo(content=args['content'],
-                        state=args['state'])
+                        state=args['state'], user=current_user)
         db.session.add(new_todo)
         db.session.commit()
         return "insert: %s"%(args['content']), 201
@@ -62,7 +75,7 @@ class TodoDetail(Resource):
     """
     method_decorators = [login_required]
     def get_object(self, id):
-        todo = Todo.query.filter_by(id=id).first()
+        todo = Todo.query.filter_by(id=id, user=current_user).first()
         if not todo:
             abort_id_cannot_found()
         return todo
@@ -105,30 +118,3 @@ class TodoDetail(Resource):
 # 配置路由
 api.add_resource(TodoList, '')
 api.add_resource(TodoDetail, '/<id>')
-
-#
-# def authenticate(func):
-#     @wraps(func)
-#     def wrapper(*args, **kwargs):
-#         if not getattr(func, 'authenticated', True):
-#             return func(*args, **kwargs)
-#
-#         acct = basic_authentication()  # custom account lookup function
-#
-#         if acct:
-#             return func(*args, **kwargs)
-#
-#         restful.abort(401)
-#     return wrapper
-
-
-# class Resource(restful.Resource):
-       # applies to all inherited resources
-
-
-
-
-
-
-
-# view = user_required(UserAPI.as_view('users'))
