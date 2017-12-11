@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>验证邮箱</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  </head>
+  <body>
+    <div>
+      <h1 id='ident'>邮箱验证</h1>
+    </div>
+
+    <script type="text/javascript">
+    var confirm_token = window.location.pathname;
+    $.ajax({
+      type: 'POST',
+      url: '/api/v1.0/auth'+confirm_token,
+      success:function(data,status){
+        alert(data);
+        window.location.replace("/login");
+      },
+      error:function(data,status){
+        alert(data.responseText);
+      }
+    });
+    </script>
+  </body>
+</html>

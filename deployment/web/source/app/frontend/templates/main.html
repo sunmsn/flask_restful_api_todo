@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>to do list testing</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  </head>
+
+  <body>
+    <h1>insert task</h1>
+    task: <input type="text" id="content">
+    state: <input type="text" id="state">
+    <button type="button" onclick="taskInsert()">insert</button>
+    <hr>
+
+    <h1>task lists</h1>
+    <div>
+      <ul id="taskList">
+      </ul>
+    </div>
+
+    <hr>
+    <h1>User role setting</h1>
+    <div>
+      <p><button type="button" onclick="rolesetting(0)">Normal User</button>: 1 task</p>
+      <p><button type="button" onclick="rolesetting(1)">VIP 1 User</button>: 3 task</p>
+      <p><button type="button" onclick="rolesetting(2)">VIP 2 User</button>: 5 task</p>
+      <p><button type="button" onclick="rolesetting(-1)">Admin User</button>: unlimited task</p>
+
+
+
+
+    </div>
+
+    <script type="text/javascript">
+      $(function(){
+        $.ajax({
+          type: 'GET',
+          url: '/api/v1.0/todo',
+          success: function(data,status){
+            for (var i = 0; i < data['todo'].length; i++) {
+              var taskId = data['todo'][i]['id'];
+              var taskContent = data['todo'][i]['content'];
+              var taskState = data['todo'][i]['state'];
+              var item = '<li>'+
+                  'task: <input type="text" id="content-'+taskId+
+                  '" value="'+taskContent+'">'+
+                  'state: <input type="text" id="state-'+taskId+
+                  '" value="'+taskState+'">'+
+                  '<button type="button" onclick="taskUpdate('+taskId+
+                  ')">update</button>'+
+                  '<button type="button" onclick="taskDelete('+taskId+
+                  ')">delete</button>'+
+                  '</li>';
+              $('#taskList').append(item);
+            }
+          }
+        });
+      });
+
+      function taskUpdate(id){
+        var content = $('#content-'+id).val();
+        var state = $('#state-'+id).val();
+        $.ajax({
+          type: 'PUT',
+          url: '/api/v1.0/todo/'+id,
+          data:{
+            'content': content,
+            'state': state
+          },
+          success:function(data,status){alert(status);location.reload();},
+          error:function(data,status){alert(data.responseJSON['message']);}
+        });
+      }
+
+      function taskDelete(id){
+        $.ajax({
+          type: 'DELETE',
+          url: '/api/v1.0/todo/'+id,
+          statusCode: {
+            204: function(){
+              alert('delete');location.reload();
+            }
+          },
+          error:function(data,status){alert(data.responseJSON['message']);}
+        });
+      }
+
+      function taskInsert(){
+        var content = $('#content').val();
+        var state = $('#state').val();
+        $.ajax({
+          type: 'POST',
+          url: '/api/v1.0/todo',
+          data:{
+            'content': content,
+            'state': state
+          },
+          success:function(data,status){alert(status);location.reload();},
+          error:function(data,status){alert(data.responseJSON['message']);}
+        });
+      }
+
+      function rolesetting(role){
+        $.ajax({
+          type: 'POST',
+          url: '/api/v1.0/auth/role',
+          data:{
+            'role': role
+          },
+          success:function(data,status){alert(status);location.reload();},
+          error:function(data,status){alert(data.responseJSON['message']);}
+        });
+      }
+    </script>
+  </body>
+
+
+</html>

@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>登录</title>
+  </head>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <body>
+
+    <div>
+      <p>用户名： <input type="text" id="username" value=""> </p>
+      <p>密码: <input type="password" id="password" value=""> </p>
+      <p> <button type="button" id="button">登录</button></p>
+    </div>
+
+    <script type="text/javascript">
+        $('#button').click(function(){
+          var username = $('#username').val();
+          var password = $('#password').val();
+          $.ajax({
+            type: 'GET',
+            url: '/api/v1.0/auth/login',
+            data:{
+              'username': username,
+              'password': password
+            },
+            success:function(data,status){
+              alert(status);
+              window.location.replace("/")
+            },
+            error:function(data,status){
+              alert(data.responseJSON['message']);
+            }
+          });
+        });
+    </script>
+
+  </body>
+</html>
